@@ -1,12 +1,21 @@
 """alkham — capture AI coding-CLI sessions as readable Markdown notes.
 
-Public API re-exports (`get_parser_for`, `register`, the `Session` model)
-land in Phase 1 — see ``docs/ROADMAP.md``. For now this module only pins the
-version so ``alkham --version`` and ``import alkham`` work.
+The public library API is re-exported here: the typed ``Session`` (plus
+``Message``/``RenderedNote``) and the ``get_parser_for``/``register`` seam.
 """
 
 from __future__ import annotations
 
+from alkham.models import Message, RenderedNote, Session
+from alkham.parsers import get_parser_for, register
+
 __version__ = "0.1.0"
 
-__all__ = ["__version__"]
+__all__ = [
+    "Message",
+    "RenderedNote",
+    "Session",
+    "__version__",
+    "get_parser_for",
+    "register",
+]
