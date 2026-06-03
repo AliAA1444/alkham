@@ -8,6 +8,7 @@ pure import path (routing/formatter) stays free of CLI dependencies.
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -67,7 +68,10 @@ class Config:
 
 
 def config_path() -> Path:
-    """OS-correct config file path (``platformdirs``)."""
+    """Config path: ``$ALKHAM_CONFIG`` override, else the platformdirs dir."""
+    override = os.environ.get("ALKHAM_CONFIG")
+    if override:
+        return Path(override)
     return Path(platformdirs.user_config_dir("alkham")) / CONFIG_FILENAME
 
 

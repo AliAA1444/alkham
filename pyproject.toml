@@ -67,6 +67,11 @@ extend-exclude = ["_bmad", ".claude"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "B", "UP"]
 
+[tool.ruff.lint.per-file-ignores]
+# Typer CLI declarations need calls in argument defaults (B008) and
+# Optional[...] (not X | None) for runtime type-hint resolution on Python 3.9.
+"src/alkham/cli.py" = ["B008", "UP007", "UP045"]
+
 [tool.mypy]
 python_version = "3.9"
 strict = true

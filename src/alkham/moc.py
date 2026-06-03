@@ -57,3 +57,20 @@ def ensure_linked(note: RenderedNote, config: Config) -> None:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(updated, encoding="utf-8")
+
+
+def rebuild_project_moc(project: str, config: Config) -> int:
+    """Re-link every session note in a project into its MOC. Returns the count."""
+    if not moc_enabled(config):
+        return 0
+    base = Path(config.output.base_path)
+    seg = sanitize_segment(project) or "inbox"
+    sessions_dir = base / config.output.projects_subdir / seg / "sessions"
+    if not sessions_dir.is_dir():
+        return 0
+    count = 0
+    for note_file in sorted(sessions_dir.glob("*.md")):
+        note = RenderedNote(filename=note_file.name, markdown="", project=project)
+        ensure_linked(note, config)
+        count += 1
+    return count

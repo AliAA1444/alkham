@@ -1,0 +1,25 @@
+name: Publish to PyPI
+
+# Publishes on a v* tag via PyPI Trusted Publishing (OIDC) — no stored token.
+# Requires a Pending Publisher configured on PyPI BEFORE the first release:
+#   owner: AliAA1444   repo: alkham   workflow: publish.yml
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # OIDC token for Trusted Publishing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
