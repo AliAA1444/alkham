@@ -54,3 +54,12 @@ def _date_prefix(timestamp: str | None) -> str:
 
 def _id_slice(session_id: str) -> str:
     return hashlib.sha1(session_id.encode("utf-8")).hexdigest()[:6]
+
+
+def title_for(session: Session) -> str:
+    """Human-readable title: the first substantive human message's first line."""
+    for message in session.messages:
+        if message.role == "human" and not is_noise(message.content):
+            first_line = message.content.strip().splitlines()[0]
+            return first_line[:80].strip() or "Untitled session"
+    return "Untitled session"
