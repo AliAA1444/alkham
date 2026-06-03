@@ -1,0 +1,3 @@
+{"type":"user","sessionId":"sess-noise","cwd":"/Users/ali/tmp","timestamp":"2026-05-14T12:00:00.000Z","message":{"role":"user","content":"/clear"}}
+{"type":"user","sessionId":"sess-noise","cwd":"/Users/ali/tmp","timestamp":"2026-05-14T12:00:01.000Z","message":{"role":"user","content":"/model claude-opus-4-8"}}
+{"type":"user","sessionId":"sess-noise","cwd":"/Users/ali/tmp","timestamp":"2026-05-14T12:00:02.000Z","message":{"role":"user","content":"/exit"}}
