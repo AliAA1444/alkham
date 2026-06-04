@@ -12,6 +12,7 @@ from typing import NoReturn, Optional
 
 import typer
 from rich.console import Console
+from rich.markup import escape
 
 from alkham import __version__
 from alkham.backfill import backfill as run_backfill
@@ -22,6 +23,7 @@ from alkham.moc import rebuild_project_moc
 from alkham.models import RenderedNote
 from alkham.parsers import get_parser_for
 from alkham.sync import capture, latest_transcript, sync_latest
+from alkham.watch import run_watch
 
 console = Console()
 err_console = Console(stderr=True)
@@ -46,7 +48,7 @@ captures the full narrative, so do not summarize the whole chat.
 
 
 def _fail(error: Exception) -> NoReturn:
-    err_console.print(f"[red]Error:[/red] {error}")
+    err_console.print(f"[red]Error:[/red] {escape(str(error))}")
     raise typer.Exit(1)
 
 
@@ -96,7 +98,8 @@ def sync(
             if path is None:
                 console.print("No transcripts found — check your config sources.")
                 raise typer.Exit(1)
-            console.print(render(get_parser_for(path).parse(), config).markdown)
+            markdown = render(get_parser_for(path).parse(), config).markdown
+            console.print(markdown, markup=False)
             return
         if transcript is not None:
             _report(transcript, capture(transcript, config))
@@ -166,3 +169,26 @@ def install_close_command() -> None:
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(_CLOSE_PROMPT, encoding="utf-8")
     console.print(f"[green]✓[/green] Installed /close -> {target}")
+
+
+@app.command()
+def watch(
+    quiet: Optional[float] = typer.Option(
+        None, "--quiet", help="Seconds of inactivity before a file is captured."
+    ),
+) -> None:
+    """Watch sources and auto-capture sessions as they go quiet (Ctrl-C to stop)."""
+    try:
+        config = load_config()
+    except AlkhamError as error:
+        _fail(error)
+    console.print("[bold]alkham watch[/bold] — auto-capturing. Press Ctrl-C to stop.")
+
+    def _printer(_path: Path, note: RenderedNote) -> None:
+        console.print(f"[green]✓[/green] {note.filename} [dim]{note.project}[/dim]")
+
+    try:
+        run_watch(config, quiet_seconds=quiet, on_capture=_printer)
+    except AlkhamError as error:
+        _fail(error)
+    console.print("Stopped.")

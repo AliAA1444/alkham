@@ -63,6 +63,7 @@ class Config:
     known_projects: list[str] = field(default_factory=list)
     blocklist: list[str] = field(default_factory=_default_blocklist)
     min_messages: int = 4
+    quiet_seconds: int = 8  # watch mode: inactivity before a file is captured
 
 
 # ── Persistence ──────────────────────────────────────────────────────────────
@@ -98,6 +99,7 @@ def to_dict(config: Config) -> dict[str, Any]:
         "known_projects": list(config.known_projects),
         "blocklist": list(config.blocklist),
         "min_messages": config.min_messages,
+        "quiet_seconds": config.quiet_seconds,
     }
 
 
@@ -131,6 +133,7 @@ def from_dict(data: dict[str, Any]) -> Config:
         known_projects=list(data.get("known_projects", base.known_projects)),
         blocklist=list(data.get("blocklist", base.blocklist)),
         min_messages=int(data.get("min_messages", base.min_messages)),
+        quiet_seconds=int(data.get("quiet_seconds", base.quiet_seconds)),
     )
 
 
@@ -163,6 +166,7 @@ def build_config(
     frontmatter: bool = True,
     artifact_extraction: bool = True,
     min_messages: int = 4,
+    quiet_seconds: int = 8,
     known_projects: list[str] | None = None,
     claude_projects_dir: str | None = None,
     codex_sessions_dir: str | None = None,
@@ -181,6 +185,7 @@ def build_config(
             frontmatter=frontmatter,
         ),
         min_messages=min_messages,
+        quiet_seconds=quiet_seconds,
         known_projects=list(known_projects or []),
         claude_projects_dir=(
             claude_projects_dir if claude_projects_dir is not None else default_claude
