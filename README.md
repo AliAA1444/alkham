@@ -1,84 +1,162 @@
-# alkham
+# 📓 alkham
 
 [![PyPI](https://img.shields.io/pypi/v/alkham)](https://pypi.org/project/alkham/)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)](https://pypi.org/project/alkham/)
 [![CI](https://github.com/AliAA1444/alkham/actions/workflows/ci.yml/badge.svg)](https://github.com/AliAA1444/alkham/actions/workflows/ci.yml)
-[![Python](https://img.shields.io/pypi/pyversions/alkham)](https://pypi.org/project/alkham/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-**Frictionless, one-command capture of your AI coding-CLI sessions — Claude
-Code _and_ Aider — as readable Markdown notes.** Library-first; Obsidian by
-default, but works with any Markdown folder.
+> **Your AI coding sessions are full of hard-won knowledge. `alkham` makes sure
+> you never lose it.**
 
-> ⚠️ **Security — transcripts are captured _verbatim_.** `alkham` does **not**
-> redact. Never capture sessions containing live API keys, tokens, or other
-> secrets: they will be written into your notes as-is. (Path-traversal and
-> Markdown/YAML-injection from hostile log content _are_ sanitized so a
-> transcript can't corrupt your vault — see `docs/ARCHITECTURE.md` §10.)
+`alkham` automatically turns your **Claude Code** and **Aider** sessions into
+clean, readable Markdown notes — filed into your knowledge base while you keep
+coding. It's a **local-first CLI** _and_ a **library-first Python engine**, in
+one package.
 
-## Why alkham
+---
 
-Your best architectural reasoning, hard-won debugging insights, and the
-*why* behind decisions are trapped in raw JSONL/history files you never read
-again (and Claude Code deletes after ~30 days). `alkham` turns those
-disposable terminal logs into clean, chronological, **human-legible** notes
-you'll actually return to — and it's the **only** tool capturing Claude Code
-**and** Aider through one pluggable engine.
+## 🤔 The Problem
 
-## Quickstart
+Every day you solve real problems with an AI coding agent: an architecture
+decided, a gnarly bug traced to its root cause, a working snippet, the
+*reasoning* behind a choice. Then… it's gone.
+
+- 🗑️ It's buried in raw `.jsonl` / history files you'll never open again.
+- ⏳ Claude Code **auto-deletes** transcripts after ~30 days.
+- 🧠 It fades from your own memory within days.
+- 🔁 So you re-solve solved problems and forget *why* you made past decisions.
+
+That terminal scrollback is some of your best thinking — and it's evaporating.
+
+## ✨ The Solution
+
+**Automated knowledge capture.** `alkham` reads the session your AI tool already
+wrote to disk and files a clean, chronological, *human-readable* note into your
+Markdown vault — automatically, with zero copy-paste.
 
 ```bash
 pip install alkham
-alkham init      # pick an output folder + flavor, toggle features
-alkham sync      # capture your most recent Claude Code or Aider session
+alkham init      # one-time: pick a folder + flavor
+alkham watch     # 🎉 done. now just code.
 ```
 
 ```
-✓ Captured 2026-05-14_add-jwt-refresh_a1b2c3.md  crowdflow
+✓ Captured  2026-05-14_add-jwt-refresh_a1b2c3.md    crowdflow
+✓ Captured  2026-05-14_fix-race-in-parser_d4e5f6.md  alkham
 ```
 
-Capture is one `alkham sync` — or run **`alkham watch`** to capture
-automatically the moment each session goes quiet (`pip install 'alkham[watch]'`).
+---
 
-## Works with or without Obsidian
+## 🧑‍💻 For your Second Brain — *zero-touch automation*
 
-The `obsidian` flavor emits wikilinks, tags, and a zero-orphan Map-of-Content.
-The `plain` flavor emits portable Markdown that opens cleanly in VS Code,
-Logseq, Notion, or any folder. Every behavior — routing, Auto-MOC, tagging,
-frontmatter — is independently **toggleable**, so `alkham` fits an existing
-knowledge base instead of overwriting it.
+Run **`alkham watch`** once. Then forget it exists.
 
-## Use it as a library
+You code naturally in Claude Code or Aider. The moment a session wraps up,
+`alkham` quietly:
+
+- 📝 captures the whole conversation as a **readable narrative**,
+- 🗂️ **routes** it to the right project folder in your Obsidian vault,
+- 🔗 **links** it into a per-project Map of Content (zero orphans),
+- 🏷️ **tags** it — and every one of these behaviors can be switched off if you
+  already have your own system.
+
+No `/save`. No manual export. No friction. Your vault simply **fills itself**
+with the context you'll actually want later — and it works with Obsidian **or
+any plain Markdown folder** (VS Code, Logseq, Notion, plain files).
+
+> 🔒 **Local & yours.** No cloud, no account, no telemetry, no network calls.
+> Plain Markdown in a folder you own.
+
+## 🛠️ For developers — *stop writing log parsers*
+
+Under the CLI is a clean, typed engine. Point it at a messy AI log and get a
+structured Python object back — in **two lines**:
 
 ```python
 from alkham.parsers import get_parser_for
 
 session = get_parser_for("chat_log.jsonl").parse()
-print(session.messages)            # -> list[Message]
-print(session.files_modified)      # tool-use breadcrumbs
+
+session.messages        # list[Message]  — clean human / assistant turns
+session.files_modified  # which files the agent touched
+session.commands_run    # which commands it ran
+session.model           # …and more, all typed
 ```
 
-`get_parser_for` auto-detects the source and raises `UnknownSourceError` on an
-unrecognized file. The `Session` dataclass is a stability commitment.
+`alkham` already handles the brittle parts — multiple tools, JSONL vs Markdown
+dialects, malformed lines, multi-session history files — so you don't have to.
+**It saves you hours of writing and maintaining parsers**, freeing you to build
+**custom tools or analytics** on top of your AI logs (compliance,
+training-data curation, usage insights, your own integrations):
 
-## CLI surface
+```python
+from pathlib import Path
+from alkham.parsers import get_parser_for
 
-| Command | Purpose |
+# Batch-parse a directory of exported logs into clean, typed objects
+for log in Path("exports").glob("*.jsonl"):
+    session = get_parser_for(log).parse()
+    process(session)   # feed your own pipeline
+```
+
+The `Session` dataclass is a **stability commitment** (additive changes only),
+and `get_parser_for` auto-detects the source — raising a typed
+`UnknownSourceError` on anything it doesn't recognize.
+
+---
+
+## 🧩 The multi-tool moat
+
+`alkham` captures **Claude Code _and_ Aider** through one pluggable engine —
+and adding a new tool touches *only* a parser module (Codex CLI and Cursor are
+on the roadmap). One install, every AI terminal.
+
+## 🎛️ Structure for free — but never forced
+
+| Behavior | Toggle |
+|---|---|
+| Project routing | `features.routing` |
+| Auto Map-of-Content | `features.auto_moc` |
+| Frontmatter tags | `features.tagging` |
+| YAML frontmatter | `features.frontmatter` |
+| Output dialect | `output.flavor` = `obsidian` \| `plain` |
+
+Every behavior is independently switchable, so `alkham` **fits your existing
+knowledge base instead of overwriting it.**
+
+## ⌨️ CLI at a glance
+
+| Command | What it does |
 |---|---|
 | `alkham init` | First-run wizard (output dir, flavor, toggles) |
+| `alkham watch` | 🤖 Background daemon — auto-capture as sessions end |
 | `alkham sync [-t FILE] [-n]` | Capture the latest (or a specific) session; `-n` dry-runs |
-| `alkham watch` | Background daemon: auto-capture sessions as they go quiet |
-| `alkham backfill [--since DATE] [--project NAME]` | Batch-capture history |
-| `alkham config [--edit]` | Show (or edit) the config |
-| `alkham moc --project NAME` | Rebuild a project's MOC |
-| `alkham install-close-command` | Install the `/close` prompt (Claude Code) |
+| `alkham backfill [--since DATE] [--project NAME]` | Batch-capture your history |
+| `alkham config [--edit]` | Show or edit the config |
+| `alkham moc --project NAME` | Rebuild a project's Map of Content |
+| `alkham install-close-command` | Install the `/close` artifact-extraction prompt |
 
-## Documentation
+## 📦 Install
 
-- `docs/PRODUCT_SPEC.md` — what it does, for whom, how it feels to use
-- `docs/ARCHITECTURE.md` — how it's built (the technical source of truth)
-- `docs/ROADMAP.md` — the phased build plan
-- `CONTRIBUTING.md` — incl. how to add a parser for a new tool
+```bash
+pip install alkham            # the CLI + library
+pip install 'alkham[watch]'   # adds the background `alkham watch` daemon
+```
 
-## License
+Requires **Python 3.9+**. Tested on macOS, Linux, and Windows.
+
+> ⚠️ **Security — transcripts are captured _verbatim_.** `alkham` does **not**
+> redact. Never capture sessions containing live API keys, tokens, or other
+> secrets — they'd be written into your notes as-is. (Path-traversal and
+> Markdown/YAML-injection from hostile log content *are* sanitized, so a
+> transcript can never corrupt your vault.)
+
+## 📚 Learn more
+
+- [`docs/PRODUCT_SPEC.md`](docs/PRODUCT_SPEC.md) — what it does, for whom, and how it feels to use
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — how it's built
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — including **how to add a parser** for a new tool
+
+## 📄 License
 
 MIT © Ali Alkhamees
