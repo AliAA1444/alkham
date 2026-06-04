@@ -169,7 +169,12 @@ Requires **Python 3.9+**. Tested on macOS, Linux, and Windows.
 > Markdown/YAML-injection from hostile log content *are* sanitized, so a
 > transcript can never corrupt your vault.)
 ```
-
+**For Windows (PowerShell):**
+Run this to add a wrapper function to your PowerShell profile:
+```bash
+if (!(Test-Path -Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force }
+Add-Content -Path $PROFILE -Value 'function claude { & claude.cmd $args; alkham sync }'
+```
 ## Learn more
 
 - [`docs/PRODUCT_SPEC.md`](docs/PRODUCT_SPEC.md) — what it does, for whom, and how it feels to use
