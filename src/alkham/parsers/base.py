@@ -8,11 +8,15 @@ by dropping a module into ``parsers/`` (and one self-registration import in
 
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable
 from pathlib import Path
-from typing import Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from alkham.errors import UnknownSourceError
 from alkham.models import Session
+
+if TYPE_CHECKING:
+    from alkham.config import Config
 
 
 @runtime_checkable
@@ -36,6 +40,23 @@ _REGISTRY: dict[str, TranscriptParser] = {}
 def register(parser: TranscriptParser) -> None:
     """Register ``parser`` under its ``source_name`` (called on import)."""
     _REGISTRY[parser.source_name] = parser
+
+
+# Per-source discovery: each parser registers where its transcripts live, so
+# ``sync.find_transcripts`` is parser-driven (adding a tool stays zero-core-change).
+_DISCOVERERS: dict[str, Callable[[Config], Iterable[Path]]] = {}
+
+
+def register_discovery(
+    source_name: str, discover: Callable[[Config], Iterable[Path]]
+) -> None:
+    """Register a discovery function for ``source_name`` (called on import)."""
+    _DISCOVERERS[source_name] = discover
+
+
+def discoverers() -> dict[str, Callable[[Config], Iterable[Path]]]:
+    """Return the registered ``{source_name: discover_fn}`` mapping (a copy)."""
+    return dict(_DISCOVERERS)
 
 
 class BoundParser:

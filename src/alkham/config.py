@@ -58,6 +58,7 @@ class Config:
     features: FeatureFlags = field(default_factory=FeatureFlags)
     sources: list[str] = field(default_factory=_default_sources)
     claude_projects_dir: str = ""
+    codex_sessions_dir: str = ""
     aider_search_roots: list[str] = field(default_factory=list)
     known_projects: list[str] = field(default_factory=list)
     blocklist: list[str] = field(default_factory=_default_blocklist)
@@ -85,6 +86,7 @@ def to_dict(config: Config) -> dict[str, Any]:
         },
         "sources": list(config.sources),
         "claude_projects_dir": config.claude_projects_dir,
+        "codex_sessions_dir": config.codex_sessions_dir,
         "aider_search_roots": list(config.aider_search_roots),
         "features": {
             "routing": config.features.routing,
@@ -122,6 +124,7 @@ def from_dict(data: dict[str, Any]) -> Config:
         ),
         sources=list(data.get("sources", base.sources)),
         claude_projects_dir=data.get("claude_projects_dir", base.claude_projects_dir),
+        codex_sessions_dir=data.get("codex_sessions_dir", base.codex_sessions_dir),
         aider_search_roots=list(
             data.get("aider_search_roots", base.aider_search_roots)
         ),
@@ -162,10 +165,12 @@ def build_config(
     min_messages: int = 4,
     known_projects: list[str] | None = None,
     claude_projects_dir: str | None = None,
+    codex_sessions_dir: str | None = None,
     aider_search_roots: list[str] | None = None,
 ) -> Config:
     """Pure config assembly from explicit answers (no prompts, no I/O)."""
     default_claude = str(Path.home() / ".claude" / "projects")
+    default_codex = str(Path.home() / ".codex" / "sessions")
     return Config(
         output=OutputConfig(flavor=flavor, base_path=str(base_path)),
         features=FeatureFlags(
@@ -179,6 +184,9 @@ def build_config(
         known_projects=list(known_projects or []),
         claude_projects_dir=(
             claude_projects_dir if claude_projects_dir is not None else default_claude
+        ),
+        codex_sessions_dir=(
+            codex_sessions_dir if codex_sessions_dir is not None else default_codex
         ),
         aider_search_roots=list(aider_search_roots or []),
     )

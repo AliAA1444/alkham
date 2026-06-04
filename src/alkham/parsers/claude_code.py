@@ -9,10 +9,13 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from alkham.models import Message, Session
-from alkham.parsers.base import register
+from alkham.parsers.base import register, register_discovery
+
+if TYPE_CHECKING:
+    from alkham.config import Config
 
 _CLAUDE_TYPES = {"user", "assistant", "summary", "system"}
 _FILE_TOOLS = {"Edit", "Write", "MultiEdit", "NotebookEdit"}
@@ -174,4 +177,13 @@ class ClaudeCodeParser:
         return [self.parse(path)]
 
 
+def _discover(config: Config) -> list[Path]:
+    """Find Claude Code JSONL transcripts under the configured projects dir."""
+    if not config.claude_projects_dir:
+        return []
+    root = Path(config.claude_projects_dir)
+    return list(root.rglob("*.jsonl")) if root.is_dir() else []
+
+
 register(ClaudeCodeParser())
+register_discovery("claude-code", _discover)

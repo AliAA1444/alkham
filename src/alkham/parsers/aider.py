@@ -18,9 +18,13 @@ from __future__ import annotations
 import hashlib
 import re
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from alkham.models import Message, Session
-from alkham.parsers.base import register
+from alkham.parsers.base import register, register_discovery
+
+if TYPE_CHECKING:
+    from alkham.config import Config
 
 _HISTORY_FILENAME = ".aider.chat.history.md"
 _MARKER = "aider chat started at"
@@ -118,4 +122,15 @@ class AiderParser:
         )
 
 
+def _discover(config: Config) -> list[Path]:
+    """Find Aider history files under the configured search roots."""
+    paths: list[Path] = []
+    for raw in config.aider_search_roots:
+        root = Path(raw)
+        if root.is_dir():
+            paths.extend(root.rglob(".aider.chat.history.md"))
+    return paths
+
+
 register(AiderParser())
+register_discovery("aider", _discover)

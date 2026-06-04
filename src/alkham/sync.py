@@ -15,21 +15,16 @@ from alkham.formatter import render
 from alkham.moc import ensure_linked
 from alkham.models import RenderedNote, Session
 from alkham.parsers import get_parser_for
+from alkham.parsers.base import discoverers
 from alkham.routing import resolve_output_dir
 
 
 def find_transcripts(config: Config) -> list[Path]:
-    """All transcript files across enabled sources."""
+    """All transcript files across enabled sources (parser-driven discovery)."""
     paths: list[Path] = []
-    if "claude-code" in config.sources and config.claude_projects_dir:
-        root = Path(config.claude_projects_dir)
-        if root.is_dir():
-            paths.extend(root.rglob("*.jsonl"))
-    if "aider" in config.sources:
-        for raw in config.aider_search_roots:
-            root = Path(raw)
-            if root.is_dir():
-                paths.extend(root.rglob(".aider.chat.history.md"))
+    for source_name, discover in discoverers().items():
+        if source_name in config.sources:
+            paths.extend(discover(config))
     return paths
 
 
