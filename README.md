@@ -150,6 +150,17 @@ pip install alkham            # the CLI + library
 pip install 'alkham[watch]'   # adds the background `alkham watch` daemon
 ```
 
+### 🪄 Pro-Tip: Automate the Sync
+
+You don't have to run the sync manually. You can set up your terminal to automatically run `alkham sync` the moment you exit Claude Code.
+
+**For Mac/Linux (Zsh/Bash):**
+Run this in your terminal to create an alias:
+```bash
+echo 'alias claude="claude && alkham sync"' >> ~/.zshrc
+source ~/.zshrc
+
+
 Requires **Python 3.9+**. Tested on macOS, Linux, and Windows.
 
 > ⚠️ **Security — transcripts are captured _verbatim_.** `alkham` does **not**
