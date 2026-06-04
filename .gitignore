@@ -19,3 +19,5 @@ venv/
 .DS_Store
 
 # alkham user config lives in platformdirs (outside the repo), never committed
+.claude/
+__bmad/
