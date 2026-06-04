@@ -15,6 +15,12 @@ one package.
 
 ---
 
+
+
+https://github.com/user-attachments/assets/fa01bc54-6e8a-4808-86ed-485dd99f20e8
+
+
+
 ## The Problem
 
 Every day you solve real problems with an AI coding agent: an architecture
