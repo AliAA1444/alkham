@@ -168,6 +168,7 @@ Requires **Python 3.9+**. Tested on macOS, Linux, and Windows.
 > secrets — they'd be written into your notes as-is. (Path-traversal and
 > Markdown/YAML-injection from hostile log content *are* sanitized, so a
 > transcript can never corrupt your vault.)
+```
 
 ## Learn more
 
