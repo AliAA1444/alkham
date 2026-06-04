@@ -36,8 +36,8 @@ alkham sync      # capture your most recent Claude Code or Aider session
 ✓ Captured 2026-05-14_add-jwt-refresh_a1b2c3.md  crowdflow
 ```
 
-Capture is a single `alkham sync` today; automatic capture (`alkham watch`)
-arrives post-launch.
+Capture is one `alkham sync` — or run **`alkham watch`** to capture
+automatically the moment each session goes quiet (`pip install 'alkham[watch]'`).
 
 ## Works with or without Obsidian
 
@@ -66,6 +66,7 @@ unrecognized file. The `Session` dataclass is a stability commitment.
 |---|---|
 | `alkham init` | First-run wizard (output dir, flavor, toggles) |
 | `alkham sync [-t FILE] [-n]` | Capture the latest (or a specific) session; `-n` dry-runs |
+| `alkham watch` | Background daemon: auto-capture sessions as they go quiet |
 | `alkham backfill [--since DATE] [--project NAME]` | Batch-capture history |
 | `alkham config [--edit]` | Show (or edit) the config |
 | `alkham moc --project NAME` | Rebuild a project's MOC |

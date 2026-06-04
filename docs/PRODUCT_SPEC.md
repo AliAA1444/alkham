@@ -39,11 +39,11 @@ entity-relation triples or LLM-extracted preference bullets optimized for *an
 AI to consume later*. `alkham` produces clean, chronological, human-legible
 session notes optimized for *a person to read, search, and link*. The
 defining axis of the wedge is **for reading** (not for LLM re-ingestion); the
-second axis is **low-friction capture** — a single `alkham sync` with no
-copy-paste-format work. v0.1.0 deliberately ships this manual one-command
-form; *fully automatic* capture (the moment a session closes) is the Phase-7
-`watch` evolution of the same wedge, **not** a v0.1.0 claim — so launch
-messaging says "frictionless/one-command," never "automatic."
+second axis is **low-friction capture** — a single `alkham sync`, or **fully
+automatic** capture via `alkham watch` (shipped in v0.2.0), which captures each
+session the moment it goes quiet with no copy-paste-format work. Both axes of
+the original wedge — *for reading* and *automatic* — are now real (v0.1.0
+shipped the manual one-command form; v0.2.0 added the automatic daemon).
 
 It runs locally, requires no API keys, no cloud, and no account, and it
 works whether or not you use Obsidian.
