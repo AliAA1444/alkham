@@ -159,7 +159,7 @@ Run this in your terminal to create an alias:
 ```bash
 echo 'alias claude="claude && alkham sync"' >> ~/.zshrc
 source ~/.zshrc
-
+```
 
 Requires **Python 3.9+**. Tested on macOS, Linux, and Windows.
 
@@ -168,7 +168,7 @@ Requires **Python 3.9+**. Tested on macOS, Linux, and Windows.
 > secrets — they'd be written into your notes as-is. (Path-traversal and
 > Markdown/YAML-injection from hostile log content *are* sanitized, so a
 > transcript can never corrupt your vault.)
-```
+
 **For Windows (PowerShell):**
 Run this to add a wrapper function to your PowerShell profile:
 ```bash
