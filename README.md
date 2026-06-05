@@ -157,7 +157,7 @@ You don't have to run the sync manually. You can set up your terminal to automat
 **For Mac/Linux (Zsh/Bash):**
 Run this in your terminal to create an alias:
 ```bash
-echo 'alias claude="claude && alkham sync"' >> ~/.zshrc
+echo 'alias claude="claude; alkham sync"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
